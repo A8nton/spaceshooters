@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
 public class Player : MonoBehaviour {
     private const float NormalSpeed = 4f;
@@ -22,9 +21,16 @@ public class Player : MonoBehaviour {
     private AudioSource audio;
     [SerializeField] private AudioClip laserClip;
 
+    private Joystick joystick;
+    private FireButton fireButton;
+
     void Start() {
         transform.position = new Vector3(0, 0, 0);
         spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        joystick = FindObjectOfType<Joystick>();
+        fireButton = FindObjectOfType<FireButton>();
+
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if (spawnManager == null) {
@@ -46,9 +52,9 @@ public class Player : MonoBehaviour {
 
     private void CalculateMovement() {
         bool firePressed;
-        
+
 #if (UNITY_ANDROID || UNITY_IOS)
-        firePressed = CrossPlatformInputManager.GetButtonDown("Fire");
+        firePressed = fireButton.pressed;
 #else
         firePressed = Input.GetKeyDown(KeyCode.Space);
 #endif
@@ -60,8 +66,8 @@ public class Player : MonoBehaviour {
         float verticalInput;
 
 #if (UNITY_ANDROID || UNITY_IOS)
-        horizontalInput = CrossPlatformInputManager.GetAxis("Horizontal");
-        verticalInput = CrossPlatformInputManager.GetAxis("Vertical");
+        horizontalInput = joystick.Horizontal;
+        verticalInput = joystick.Vertical;
 #else
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
@@ -107,13 +113,13 @@ public class Player : MonoBehaviour {
         if (health == 2) {
             rightEngine.SetActive(true);
         }
-        
+
         if (health == 1) {
             leftEngine.SetActive(true);
         }
 
         uiManager.UpdateLives(health);
-        
+
         if (health < 1) {
             spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);

@@ -18,8 +18,12 @@ public class UIManager : MonoBehaviour {
         if (gameManager == null) {
             Debug.LogError("GAME_MANAGER IS NULL");
         }
+
+#if (!UNITY_ANDROID && !UNITY_IOS)
+        FindObjectOfType<Joystick>().gameObject.SetActive(false);
+        FindObjectOfType<FireButton>().gameObject.SetActive(false);
+#endif
     }
-    
 
     public void UpdateScore(int playerScore) {
         scoreText.text = "Score: " + playerScore.ToString();
