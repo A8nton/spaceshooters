@@ -6,19 +6,22 @@ public class Enemy : MonoBehaviour {
     [SerializeField] private Animator animator;
     private AudioSource audio;
     [SerializeField] private AudioClip explosionClip;
-    private bool isAlreadyHit;
+    [SerializeField] private AudioClip laserClip;
+    private bool isDead;
+    [SerializeField] private GameObject enemyLaser;
+    private float firePause;
+    private bool bornToFire;
+    private static readonly int OnEnemyDeath = Animator.StringToHash("OnEnemyDeath");
 
     private void Start() {
         player = GameObject.Find("Player").GetComponent<Player>();
         animator = GetComponent<Animator>();
-        
         audio = GetComponent<AudioSource>();
         if (audio == null) {
             Debug.LogError("Audio Source on Enemy is Null");
         }
-        else {
-            audio.clip = explosionClip;
-        }
+
+        bornToFire = checkIfBornToFire();
     }
 
     void Update() {
@@ -26,34 +29,52 @@ public class Enemy : MonoBehaviour {
 
         if (transform.position.y <= -6) {
             transform.position = SpawnPosition();
+            bornToFire = checkIfBornToFire();
+        }
+
+        if (Time.time > firePause && bornToFire && !isDead) {
+            FireLaser();
         }
     }
 
-    public Vector3 SpawnPosition() {
+    private bool checkIfBornToFire() {
+        return Random.Range(1, 5) == 1;
+    }
+
+    private void FireLaser() {
+        firePause = (Time.time + 0.75f);
+        Instantiate(enemyLaser, transform.position + new Vector3(0, -1.05f, 0), Quaternion.identity);
+
+        audio.clip = laserClip;
+        audio.Play();
+    }
+
+    private Vector3 SpawnPosition() {
         return new Vector3(Random.Range(-9f, 9f), 7, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("Player") && !isAlreadyHit) {
-            isAlreadyHit = true;
-            Player player = other.transform.GetComponent<Player>();
+        audio.clip = explosionClip;
+        if (other.CompareTag("Player") && !isDead) {
+            isDead = true;
 
             if (player != null) {
                 player.Damage();
             }
-            animator.SetTrigger("OnEnemyDeath");
+
+            animator.SetTrigger(OnEnemyDeath);
             speed = 0.5f;
             audio.Play();
             Destroy(gameObject, 2.5f);
         }
 
-        if (other.CompareTag("Laser") && !isAlreadyHit) {
-            isAlreadyHit = true;
+        if (other.CompareTag("Laser") && !isDead) {
+            isDead = true;
             if (player != null) {
                 player.UpdateScore(10);
             }
 
-            animator.SetTrigger("OnEnemyDeath");
+            animator.SetTrigger(OnEnemyDeath);
             speed = 0.5f;
             Destroy(other.gameObject);
             audio.Play();

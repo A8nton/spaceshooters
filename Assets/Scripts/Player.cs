@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private float speed = NormalSpeed;
     [SerializeField] private GameObject LaserPrefab;
     [SerializeField] private float fireRate = 0.15f;
-    private float _canFire = -1f;
+    private float canFire = -1f;
     [SerializeField] private int health = 3;
     private SpawnManager spawnManager;
     private bool shootTriple;
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
 #else
         firePressed = Input.GetKeyDown(KeyCode.Space);
 #endif
-        if (firePressed && Time.time > _canFire) {
+        if (firePressed && Time.time > canFire) {
             FireLaser();
         }
 
@@ -90,7 +90,7 @@ public class Player : MonoBehaviour {
     }
 
     private void FireLaser() {
-        _canFire = (Time.time + fireRate);
+        canFire = (Time.time + fireRate);
         if (shootTriple) {
             Instantiate(TripleLaserPrefab, transform.position, Quaternion.identity);
         }
