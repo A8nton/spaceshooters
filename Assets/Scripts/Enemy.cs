@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour {
             Debug.LogError("Audio Source on Enemy is Null");
         }
 
-        bornToFire = checkIfBornToFire();
+        bornToFire = СheckIfBornToFire();
     }
 
     void Update() {
@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour {
 
         if (transform.position.y <= -6) {
             transform.position = SpawnPosition();
-            bornToFire = checkIfBornToFire();
+            bornToFire = СheckIfBornToFire();
         }
 
         if (Time.time > firePause && bornToFire && !isDead) {
@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    private bool checkIfBornToFire() {
+    private bool СheckIfBornToFire() {
         return Random.Range(1, 5) == 1;
     }
 
