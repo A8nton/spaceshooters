@@ -29,7 +29,7 @@ public class Powerup : MonoBehaviour {
                         break;
                 }
             }
-            AudioSource.PlayClipAtPoint(audioClip, new Vector3(0,0,-10));
+            AudioSource.PlayClipAtPoint(audioClip, new Vector3(0,0,-7));
             Destroy(gameObject);
         }
     }

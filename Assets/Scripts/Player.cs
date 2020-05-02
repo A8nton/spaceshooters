@@ -121,6 +121,11 @@ public class Player : MonoBehaviour {
         uiManager.UpdateLives(health);
 
         if (health < 1) {
+            int bestScore = PlayerPrefs.GetInt("BestScore");
+            if (score > bestScore) {
+                PlayerPrefs.SetInt("BestScore", score);
+            }
+
             spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
         }

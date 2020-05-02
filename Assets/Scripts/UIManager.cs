@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
     [SerializeField] private Text scoreText;
+    [SerializeField] private Text bestScoreText;
     [SerializeField] private Image livesImg;
     [SerializeField] private Sprite[] liveSprites;
     [SerializeField] private Text gameOverText;
@@ -11,6 +12,11 @@ public class UIManager : MonoBehaviour {
     private GameManager gameManager;
 
     private void Start() {
+        int bestScore = PlayerPrefs.GetInt("BestScore");
+        if (bestScore > 0) {
+            bestScoreText.text = "Best: " + bestScore.ToString();
+        }
+        
         scoreText.text = "Score: 0";
         gameOverText.gameObject.SetActive(false);
         gameOverRestartText.gameObject.SetActive(false);
