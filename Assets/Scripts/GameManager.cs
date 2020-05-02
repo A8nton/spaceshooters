@@ -2,10 +2,12 @@
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-
     [SerializeField] private bool isGameOver;
 
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SceneManager.LoadScene(0);
+
         bool restartPressed;
 
 #if (UNITY_ANDROID || UNITY_IOS)
